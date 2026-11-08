@@ -1,16 +1,13 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import {
   Activity,
   ArrowDownToLine,
-  ArrowLeft,
   ArrowRight,
   ArrowUpRight,
   BarChart3,
   Check,
-  ChevronDown,
   CircleAlert,
   Clock3,
-  ExternalLink,
   FileSearch,
   Globe2,
   History,
@@ -24,12 +21,11 @@ import {
   Shield,
   ShieldAlert,
   ShieldCheck,
-  Sparkles,
   Trash2,
   X,
   Zap,
 } from "lucide-react";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState, type FormEvent, type ReactNode } from "react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -82,13 +78,16 @@ function PhishGuardApp() {
     setHealthChecked(true);
   };
 
-  useState(() => {
-    void Promise.resolve().then(async () => {
-      const current = await getAnalyzerHealth();
-      setHealth(current);
-      setHealthChecked(true);
+  useEffect(() => {
+    let active = true;
+    void getAnalyzerHealth().then((current) => {
+      if (active) {
+        setHealth(current);
+        setHealthChecked(true);
+      }
     });
-  });
+    return () => { active = false; };
+  }, []);
 
   const goTo = (next: View) => {
     setView(next);
@@ -171,7 +170,7 @@ function ServiceStatus({ health }: { health: AnalyzerHealth }) {
   </div>;
 }
 
-function PageHeading({ eyebrow, title, description, children }: { eyebrow: string; title: string; description: string; children?: React.ReactNode }) {
+function PageHeading({ eyebrow, title, description, children }: { eyebrow: string; title: string; description: string; children?: ReactNode }) {
   return <div className="mb-7 flex flex-col justify-between gap-5 sm:flex-row sm:items-end">
     <div><div className="mb-2 flex items-center gap-2 font-mono text-[10px] tracking-[0.2em] text-cyber-cyan"><span className="text-cyber-lime">●</span>{eyebrow}</div><h1 className="text-2xl font-semibold tracking-tight sm:text-[30px]">{title}</h1><p className="mt-2 max-w-[680px] text-sm text-muted-foreground">{description}</p></div>
     {children}
@@ -293,7 +292,7 @@ function Scanner({ kind, health, onScan }: { kind: ScanKind; health: AnalyzerHea
     setUrl(""); setSender(""); setSubject(""); setBody(""); setError(""); setResult(null);
   };
 
-  const submit = async (event: React.FormEvent<HTMLFormElement>) => {
+  const submit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setError(""); setResult(null);
     if (kind === "url") {
