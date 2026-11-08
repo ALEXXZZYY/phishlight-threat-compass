@@ -135,7 +135,7 @@ function PhishGuardApp() {
           </header>
 
           <main className="mx-auto w-full max-w-[1320px] flex-1 px-4 py-7 sm:px-7 sm:py-9 lg:px-10">
-            {view === "dashboard" && <Dashboard records={records} ready={ready} health={health} healthChecked={healthChecked} onNavigate={goTo} />}
+            {view === "dashboard" && <Dashboard records={records} ready={ready} health={health} onNavigate={goTo} />}
             {view === "url" && <Scanner kind="url" health={health} onScan={addRecord} />}
             {view === "email" && <Scanner kind="email" health={health} onScan={addRecord} />}
             {view === "history" && <HistoryPage records={records} ready={ready} onClear={clearRecords} />}
@@ -183,7 +183,7 @@ function Metric({ icon: Icon, label, value, note, tone = "lime" }: { icon: typeo
   return <div className="border border-border bg-card/80 p-4 sm:p-5"><div className="mb-5 flex items-start justify-between"><span className="font-mono text-[10px] tracking-[0.14em] text-muted-foreground">{label}</span><span className={`grid size-8 place-items-center rounded-md ${bg} ${tint}`}><Icon size={16} /></span></div><div className="font-mono text-[25px] tracking-tight sm:text-[30px]">{value}</div><div className="mt-2 text-[11px] text-muted-foreground">{note}</div></div>;
 }
 
-function Dashboard({ records, ready, health, healthChecked, onNavigate }: { records: ScanRecord[]; ready: boolean; health: AnalyzerHealth; healthChecked: boolean; onNavigate: (view: View) => void }) {
+function Dashboard({ records, ready, health, onNavigate }: { records: ScanRecord[]; ready: boolean; health: AnalyzerHealth; onNavigate: (view: View) => void }) {
   const total = records.length;
   const safe = records.filter((record) => record.prediction === "SAFE").length;
   const risky = records.filter((record) => record.prediction !== "SAFE").length;
