@@ -1,0 +1,4 @@
+- [x] Inspect the request and current app setup.
+- [x] Build the responsive dashboard, scanners, history, and project details screens.
+- [x] Add the separate Python ML service and setup instructions without fabricated models or predictions.
+- [x] Verify the main scan and history experience, responsive layout, and build status.

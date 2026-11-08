@@ -27,3 +27,9 @@ npm run dev
 - TypeScript
 - React
 - Tailwind CSS
+
+## PhishGuard AI model service
+
+The web application does not contain placeholder predictions. URL and email classification require the separate Python/FastAPI service and trained model artifacts described in [`ml-service/README.md`](ml-service/README.md). Install its dependencies with `pip install -r ml-service/requirements.txt`, train it with reviewed, labeled datasets, then configure `VITE_PHISHGUARD_API_URL` to its HTTPS base URL. Until both models are available, the interface reports the unavailable state and refuses to show a verdict.
+
+The service never opens submitted URLs or email attachments. Scan history is kept in the current browser and can be exported or cleared from the app.
