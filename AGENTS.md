@@ -28,3 +28,7 @@ use the editor.
   own key and store it in Secrets.
 - **Secrets.** Lovable manages them. Do not put secret values in the repo.
 <!-- LOVABLE:END -->
+
+## PhishGuard app structure
+- Keep URL/email model inference in the separately deployed Python service; the web app must show no prediction when the service or trained model is unavailable, because its Worker deployment cannot host scikit-learn.
+- Keep scan-history content browser-local by default, because submitted URLs and emails may be sensitive and do not need server storage.
