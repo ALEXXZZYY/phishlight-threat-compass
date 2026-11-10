@@ -30,5 +30,5 @@ use the editor.
 <!-- LOVABLE:END -->
 
 ## PhishGuard app structure
-- Keep URL/email model inference in the separately deployed Python service; the web app must show no prediction when the service or trained model is unavailable, because its Worker deployment cannot host scikit-learn.
+- Use the separately deployed Python service for inference when VITE_PHISHGUARD_API_URL is set (Workers can't host scikit-learn); otherwise use the built-in server-side AI analyzer, and show no prediction if the chosen analyzer fails.
 - Keep scan-history content browser-local by default, because submitted URLs and emails may be sensitive and do not need server storage.

@@ -1,3 +1,4 @@
+import { analyzeWithAi } from "@/lib/phishguard-ai.functions";
 import type { AnalyzerHealth, PredictionResult } from "@/lib/phishguard.types";
 
 interface ApiPrediction {
@@ -42,7 +43,9 @@ function parsePrediction(payload: ApiPrediction): PredictionResult {
 async function postPrediction(path: string, body: Record<string, string>) {
   const baseUrl = getApiBaseUrl();
   if (!baseUrl) {
-    throw new Error("The model service is not connected. No prediction was produced.");
+    const kind = path.endsWith("url") ? "url" : "email";
+    const payload = await analyzeWithAi({ data: { kind, ...body } });
+    return parsePrediction(payload);
   }
 
   let response: Response;
@@ -86,7 +89,8 @@ export function analyzeEmail(sender: string, subject: string, body: string) {
 export async function getAnalyzerHealth(): Promise<AnalyzerHealth> {
   const baseUrl = getApiBaseUrl();
   if (!baseUrl) {
-    return { status: "unconfigured", urlModelReady: false, emailModelReady: false };
+    // Built-in AI analyzer (server-side, Lovable AI) is used when no Python service is configured.
+    return { status: "online", urlModelReady: true, emailModelReady: true };
   }
 
   try {
