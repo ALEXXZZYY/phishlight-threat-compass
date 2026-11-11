@@ -18,6 +18,7 @@ import {
   Menu,
   Moon,
   Radar,
+  Shield,
   Search,
   ShieldAlert,
   ShieldCheck,
@@ -32,13 +33,12 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import kavachphishLogo from "@/assets/kavachphish-logo.png.asset.json";
+import { applyThemePreference, readThemePreference, saveThemePreference, type ThemeMode } from "@/lib/theme-preference";
 import { analyzeEmail, analyzeUrl, getAnalyzerHealth } from "@/lib/phishguard-api";
 import { downloadScanReport, useScanHistory } from "@/lib/phishguard-history";
 import type { AnalyzerHealth, ScanKind, ScanPrediction, ScanRecord } from "@/lib/phishguard.types";
 
 const APP_TITLE = "PhishGuard MLX";
-const THEME_STORAGE_KEY = "phishguard.theme";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -67,7 +67,7 @@ const navigation: { id: View; label: string; icon: typeof Activity }[] = [
 function PhishGuardApp() {
   const [view, setView] = useState<View>("dashboard");
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
-  const [theme, setTheme] = useState<"dark" | "light">("dark");
+  const [theme, setTheme] = useState<ThemeMode>("dark");
   const [health, setHealth] = useState<AnalyzerHealth>({
     status: "checking",
     urlModelReady: false,
@@ -94,21 +94,16 @@ function PhishGuardApp() {
   }, []);
 
   useEffect(() => {
-    const savedTheme = window.localStorage.getItem(THEME_STORAGE_KEY);
-    const nextTheme = savedTheme === "light" ? "light" : "dark";
-    setTheme(nextTheme);
-    document.documentElement.classList.toggle("dark", nextTheme === "dark");
+    const savedTheme = readThemePreference();
+    setTheme(savedTheme);
+    applyThemePreference(savedTheme);
   }, []);
 
   const toggleTheme = () => {
     const nextTheme = theme === "dark" ? "light" : "dark";
     setTheme(nextTheme);
-    document.documentElement.classList.toggle("dark", nextTheme === "dark");
-    try {
-      window.localStorage.setItem(THEME_STORAGE_KEY, nextTheme);
-    } catch {
-      // Keep the selected theme active for this page if browser storage is unavailable.
-    }
+    applyThemePreference(nextTheme);
+    saveThemePreference(nextTheme);
   };
 
   const goTo = (next: View) => {
@@ -124,7 +119,7 @@ function PhishGuardApp() {
         {mobileNavOpen && <button aria-label="Close navigation" onClick={() => setMobileNavOpen(false)} className="fixed inset-0 z-30 bg-background/80 backdrop-blur-sm lg:hidden" />}
         <aside className={`fixed inset-y-0 left-0 z-40 flex w-[270px] flex-col border-r border-border bg-surface-deep/95 transition-transform lg:sticky lg:top-0 lg:h-screen lg:translate-x-0 ${mobileNavOpen ? "translate-x-0" : "-translate-x-full"}`}>
           <div className="flex h-[84px] items-center gap-3 border-b border-border px-6">
-            <img src={kavachphishLogo.url} alt="PhishGuard MLX" className="size-10 shrink-0 rounded-lg border border-cyber-lime/35 object-cover glow-lime" />
+            <div className="grid size-10 shrink-0 place-items-center rounded-lg border border-cyber-lime/35 bg-cyber-lime/10 text-cyber-lime glow-lime"><Shield size={22} /></div>
             <div><div className="text-[15px] font-semibold">PhishGuard <span className="text-cyber-lime">MLX</span></div><div className="font-mono text-[10px] text-muted-foreground">THREAT ANALYSIS SYSTEM</div></div>
           </div>
           <div className="px-5 pt-7 pb-2 font-mono text-[10px] tracking-[0.2em] text-muted-foreground">WORKSPACE</div>
@@ -420,7 +415,7 @@ function AboutPage({ health, onNavigate, onRefreshHealth }: { health: AnalyzerHe
   return <>
     <PageHeading eyebrow="SYSTEM INFORMATION / 05" title="About PhishGuard MLX" description="A phishing analysis workspace designed to make every prediction traceable and transparent." />
     <section className="grid gap-6 xl:grid-cols-[1fr_0.8fr]">
-      <div className="border border-border bg-card/80 p-6 sm:p-8"><img src={kavachphishLogo.url} alt="PhishGuard MLX" className="mb-5 size-12 rounded-md border border-cyber-lime/30 object-cover" /><div className="font-mono text-[10px] tracking-[0.16em] text-cyber-cyan">PROJECT OVERVIEW</div><h2 className="mt-2 text-xl font-semibold">{APP_TITLE}</h2><p className="mt-4 max-w-2xl text-sm leading-7 text-muted-foreground">This interface supports model-backed phishing analysis for URLs and email text. Classification results come only from a separately deployed, trained model service. The app does not infer a verdict when the service is disconnected or its model files are unavailable.</p><div className="mt-6 grid gap-3 sm:grid-cols-2"><TechItem icon={Globe2} title="URL analysis" text="Model classification with observable structure indicators." /><TechItem icon={Mail} title="Email analysis" text="Text-only model analysis with clear inspection notes." /><TechItem icon={BarChart3} title="Transparent results" text="Confidence, model version, and observed indicators." /><TechItem icon={LockKeyhole} title="Local history" text="Saved only in the current browser, with report export." /></div></div>
+      <div className="border border-border bg-card/80 p-6 sm:p-8"><div className="mb-5 grid size-12 place-items-center border border-cyber-lime/30 bg-cyber-lime/10 text-cyber-lime"><Shield size={24} /></div><div className="font-mono text-[10px] tracking-[0.16em] text-cyber-cyan">PROJECT OVERVIEW</div><h2 className="mt-2 text-xl font-semibold">{APP_TITLE}</h2><p className="mt-4 max-w-2xl text-sm leading-7 text-muted-foreground">This interface supports model-backed phishing analysis for URLs and email text. Classification results come only from a separately deployed, trained model service. The app does not infer a verdict when the service is disconnected or its model files are unavailable.</p><div className="mt-6 grid gap-3 sm:grid-cols-2"><TechItem icon={Globe2} title="URL analysis" text="Model classification with observable structure indicators." /><TechItem icon={Mail} title="Email analysis" text="Text-only model analysis with clear inspection notes." /><TechItem icon={BarChart3} title="Transparent results" text="Confidence, model version, and observed indicators." /><TechItem icon={LockKeyhole} title="Local history" text="Saved only in the current browser, with report export." /></div></div>
       <div className="space-y-5"><div className="border border-border bg-card/80 p-5"><div className="flex items-center justify-between"><div><div className="font-mono text-[9px] tracking-[0.14em] text-muted-foreground">SERVICE CONNECTION</div><h2 className="mt-2 text-base font-medium">Analysis engine</h2></div><Button variant="outline" size="sm" className="gap-2 text-[10px]" onClick={onRefreshHealth}><Activity size={13} />Refresh</Button></div><div className="mt-4"><ServiceStatus health={health} /></div><p className="mt-3 text-[10px] leading-5 text-muted-foreground">Connect your separately hosted model API with the app's <code className="font-mono text-cyber-cyan">VITE_PHISHGUARD_API_URL</code> setting.</p></div>
       <div className="border border-cyber-red/20 bg-cyber-red/5 p-5"><div className="mb-3 flex items-center gap-2 text-cyber-red"><CircleAlert size={16} /><h2 className="text-sm font-medium">Limitations and safe use</h2></div><ul className="space-y-2 text-xs leading-5 text-muted-foreground"><li>Classifier output is not a guarantee of safety or a substitute for security review.</li><li>Confidence scores are model outputs and may not be calibrated.</li><li>Submitted URLs are passed as text only; the app never navigates to them.</li><li>Email attachments are not accepted or opened.</li></ul></div>
       <div className="flex flex-wrap gap-2"><Button className="gap-2 bg-cyber-lime text-primary-foreground hover:bg-cyber-lime/90" onClick={() => onNavigate("url")}><Globe2 size={15} />Open URL scanner</Button><Button variant="outline" className="gap-2" onClick={() => onNavigate("email")}><Mail size={15} />Open email scanner</Button></div></div>

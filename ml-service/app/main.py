@@ -14,7 +14,7 @@ ROOT = Path(__file__).resolve().parents[1]
 MODEL_DIR = Path(os.environ.get("PHISHGUARD_MODEL_DIR", ROOT / "models"))
 LABELS = {"SAFE", "SUSPICIOUS", "PHISHING"}
 
-app = FastAPI(title="PhishGuard AI model service", version="1.0.0")
+app = FastAPI(title="PhishGuard MLX model service", version="1.0.0")
 origins = [origin.strip() for origin in os.environ.get("PHISHGUARD_CORS_ORIGINS", "").split(",") if origin.strip()]
 if origins:
     app.add_middleware(
