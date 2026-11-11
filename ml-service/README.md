@@ -1,4 +1,4 @@
-# PhishGuard AI model service
+# PhishGuard MLX model service
 
 This FastAPI service runs the URL and email classifiers separately from the web app. It never visits submitted URLs, follows links, or opens attachments. No model artifacts or example predictions are included; without trained artifacts the health check reports models as unavailable and both prediction endpoints return HTTP 503.
 

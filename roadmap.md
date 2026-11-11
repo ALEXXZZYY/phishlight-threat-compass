@@ -2,3 +2,6 @@
 - [x] Build the responsive dashboard, scanners, history, and project details screens.
 - [x] Add the separate Python ML service and setup instructions without fabricated models or predictions.
 - [x] Verify the main scan and history experience, responsive layout, and build status.
+- [x] Rename visible product branding to PhishGuard MLX without changing scan behavior.
+- [x] Add an accessible dark/light theme switch with a saved browser preference.
+- [ ] Verify both themes and confirm existing application workflows remain intact.

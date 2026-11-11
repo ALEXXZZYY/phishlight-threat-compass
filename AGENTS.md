@@ -32,3 +32,4 @@ use the editor.
 ## PhishGuard app structure
 - Use the separately deployed Python service for inference when VITE_PHISHGUARD_API_URL is set (Workers can't host scikit-learn); otherwise use the built-in server-side AI analyzer, and show no prediction if the chosen analyzer fails.
 - Keep scan-history content browser-local by default, because submitted URLs and emails may be sensitive and do not need server storage.
+- Keep theme preference reads and DOM theme application inside browser effects/events via a small utility, preventing SSR access to localStorage or the document.
