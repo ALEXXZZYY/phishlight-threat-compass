@@ -4,4 +4,4 @@
 - [x] Verify the main scan and history experience, responsive layout, and build status.
 - [x] Rename visible product branding to PhishGuard MLX without changing scan behavior.
 - [x] Add an accessible dark/light theme switch with a saved browser preference.
-- [ ] Verify both themes and confirm existing application workflows remain intact.
+- [x] Verify both themes and confirm existing application workflows remain intact.
